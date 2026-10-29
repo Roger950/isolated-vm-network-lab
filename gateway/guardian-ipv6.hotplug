@@ -1,0 +1,4 @@
+#!/bin/sh
+case "${ACTION:-}" in ifup|ifupdate) ;; *) exit 0 ;; esac
+case "${INTERFACE:-}" in wan|management) ;; *) exit 0 ;; esac
+test ! -e /proc/sys/net/ipv6/conf/eth1/disable_ipv6 || printf '1\n' > /proc/sys/net/ipv6/conf/eth1/disable_ipv6

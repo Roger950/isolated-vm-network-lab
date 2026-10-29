@@ -1,0 +1,48 @@
+table inet guardian_gateway {}
+delete table inet guardian_gateway
+table inet guardian_gateway {
+    set isp_endpoint {
+        type ipv4_addr . inet_service
+        elements = { __ENDPOINT__ }
+    }
+    counter blocked_input {}
+    counter blocked_output {}
+    counter blocked_direct_probe {}
+    counter blocked_forward {}
+    counter redirected_tcp {}
+    counter redirected_dns {}
+    chain proxy_prerouting {
+        type nat hook prerouting priority -101; policy accept;
+        iifname "br-lan" meta nfproto ipv4 udp dport 53 counter name redirected_dns redirect to :53
+        iifname "br-lan" meta nfproto ipv4 tcp dport 53 counter name redirected_dns redirect to :53
+        iifname "br-lan" ip daddr 10.42.0.1 return
+        iifname "br-lan" meta nfproto ipv4 meta l4proto tcp counter name redirected_tcp redirect to :7892
+    }
+    chain input_guard {
+        type filter hook input priority 10; policy drop;
+        iifname "lo" accept
+        ct state invalid drop
+        iifname "eth1" ip saddr 192.168.56.1 ip daddr 192.168.56.10 tcp dport 22 accept
+        iifname "eth1" ip saddr . tcp sport @isp_endpoint ct state established accept
+        meta nfproto ipv4 ip protocol icmp ct state related accept
+        iifname "br-lan" meta nfproto ipv4 udp sport 68 udp dport 67 accept
+        iifname "br-lan" meta nfproto ipv4 udp dport 53 accept
+        iifname "br-lan" meta nfproto ipv4 tcp dport { 53, 7892 } accept
+        iifname "br-lan" ip daddr 10.42.0.1 tcp dport { 80, 443 } accept
+        counter name blocked_input drop
+    }
+    chain output_guard {
+        type filter hook output priority 10; policy drop;
+        oifname "lo" accept
+        oifname "eth1" ip saddr 192.168.56.10 ip daddr 192.168.56.1 tcp sport 22 ct state established accept
+        oifname "eth1" ip daddr . tcp dport @isp_endpoint accept
+        oifname "br-lan" ip daddr 10.42.0.0/24 ct state established,related accept
+        oifname "br-lan" meta nfproto ipv4 udp sport 67 udp dport 68 accept
+        oifname "eth1" ip daddr 1.1.1.1 tcp dport 443 counter name blocked_direct_probe drop
+        counter name blocked_output drop
+    }
+    chain forward_guard {
+        type filter hook forward priority 10; policy drop;
+        counter name blocked_forward drop
+    }
+}
