@@ -1,0 +1,17 @@
+.local/
+.secrets/
+__pycache__/
+*.pyc
+*.exe
+*.iso
+*.vmdk
+*.vmx
+*.vmem
+*.vmss
+*.nvram
+*.key
+*.pem
+*.log
+*.bak
+private-*.json
+endpoint-switch-result.json
