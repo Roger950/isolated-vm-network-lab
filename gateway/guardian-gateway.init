@@ -1,0 +1,16 @@
+#!/bin/sh /etc/rc.common
+START=18
+STOP=99
+start() {
+    local rules rc
+    umask 077
+    rules=$(mktemp /tmp/guardian-rules.XXXXXX) || return 1
+    /usr/share/guardian-gateway/guardian-render-firewall.sh > "$rules" || { rm -f "$rules"; return 1; }
+    nft -c -f "$rules" && nft -f "$rules"
+    rc=$?
+    rm -f "$rules"
+    return "$rc"
+}
+reload() { start; }
+# Stopping the proxy or this init script must leave the guard in place.
+stop() { return 0; }
