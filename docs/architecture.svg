@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="370" viewBox="0 0 1200 370" role="img" aria-labelledby="title desc">
+<title id="title">Isolated VM Network Lab architecture</title><desc id="desc">Isolated Windows guest routes through OpenWrt, host TUN, upstream transit and a fixed SOCKS5 egress. Management and rollback are separate.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#4c83b8"/></marker></defs>
+<rect width="1200" height="370" rx="18" fill="#101d30"/>
+<g font-family="Segoe UI,Arial,sans-serif"><text x="40" y="47" font-size="14" fill="#7dc4ff" letter-spacing="2">ISOLATION / OBSERVABILITY / RECOVERY</text><text x="40" y="84" font-size="28" font-weight="600" fill="#fff">A controlled path from the guest to the Internet</text>
+<g fill="#1b304b" stroke="#3b5977"><rect x="40" y="125" width="185" height="100" rx="12"/><rect x="272" y="125" width="220" height="100" rx="12"/><rect x="539" y="125" width="185" height="100" rx="12"/><rect x="771" y="125" width="185" height="100" rx="12"/><rect x="1003" y="125" width="157" height="100" rx="12"/></g>
+<g stroke="#4c83b8" stroke-width="2" marker-end="url(#arrow)"><path d="M225 175h45"/><path d="M492 175h45"/><path d="M724 175h45"/><path d="M956 175h45"/></g>
+<g fill="#fff" text-anchor="middle" font-size="18" font-weight="600"><text x="132" y="163">Windows Guest</text><text x="382" y="163">OpenWrt Gateway</text><text x="631" y="163">Host TUN</text><text x="863" y="163">SOCKS5 Egress</text><text x="1081" y="163">HTTPS</text></g>
+<g fill="#b5c8dd" text-anchor="middle" font-size="13"><text x="132" y="192">Isolated LAN only</text><text x="382" y="192">TCP redirect + DNS control</text><text x="631" y="192">Upstream transit</text><text x="863" y="192">Single endpoint</text><text x="1081" y="192">TLS verified</text></g>
+<path d="M382 225v38H58" stroke="#67c9b0" stroke-dasharray="6 5" fill="none"/>
+<text x="40" y="296" font-size="15" fill="#8ce0c7">Independent SSH management + timed rollback</text><text x="40" y="328" font-size="13" fill="#9fb1c9">Default-drop forwarding / endpoint allowlist / IPv6 disabled / evidence separated by layer</text></g></svg>
